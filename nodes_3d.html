@@ -23,8 +23,6 @@
       
       document.body.appendChild(renderer.domElement);
             
-      
-      
       var nodes = [];
       
       for(var i = 0; i < 25; i++) {
@@ -43,7 +41,23 @@
             node.changeDestination();
           }
         });
-      }
+      };
+      
+      function drawConnections (nodes) {
+        nodes.forEach(function (node) {
+          nodes.forEach(function (other_node) {
+            if(node !== other_node) {
+              var nodePos = node.mesh.position;
+              var otherNodePos = other_node.mesh.position;
+              
+              //draw a line from node vertex to other node vertex
+              
+            }
+          });
+        });
+      };
+      
+      drawConnections(nodes);
       
       
       function render () {
