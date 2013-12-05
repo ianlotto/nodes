@@ -27,7 +27,7 @@
         this.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.position = position;
-        this.destination = Node.calcRandomPosition;
+        this.destination = Node.calcRandomPosition();
         console.log("Node added");
       }
       
@@ -43,20 +43,54 @@
         return this.mesh.position;
       };
       
-      Node.prototype.calcDestination = function () {
+      Node.prototype.changeDestination = function () {
         this.destination = Node.calcRandomPosition();
       };
       
+      Node.prototype.moveToDestination = function (increment) {
+        var curPos = this.mesh.position;
+        
+        this.mesh.position.x += (this.destination.x - curPos.x) / 20;
+        this.mesh.position.y += (this.destination.y - curPos.y) / 20;
+        this.mesh.position.z += (this.destination.z - curPos.z) / 20;
+      };
       
+      Node.prototype._distanceToDestination = function () {
+        var curPos = this.mesh.position;
+        
+        var distanceX = this.destination.x - curPos.x;
+        var distanceY = this.destination.y - curPos.y;
+        var distanceZ = this.destination.z - curPos.z;
+        
+        var squaredSum = Math.pow(distanceX, 2) + Math.pow(distanceY, 2) + Math.pow(distanceZ, 2);
+        
+        return Math.sqrt(squaredSum)
+      }
+      
+      var nodes = [];
       
       for(var i = 0; i < 25; i++) {
         var position = Node.calcRandomPosition();
-        scene.add(new Node(position).mesh);
+        nodes.push(new Node(position));
+      }
+      
+      nodes.forEach(function (node) {
+        scene.add(node.mesh);
+      });
+      
+      function moveNodes (nodes) {
+        nodes.forEach(function (node) {
+          node.moveToDestination();
+          if(node._distanceToDestination() < 2) {
+            node.changeDestination();
+          }
+        });
       }
       
       
       function render () {
         requestAnimationFrame(render);
+        moveNodes(nodes);
         renderer.render(scene, camera);
       }
       
