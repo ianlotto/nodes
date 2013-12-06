@@ -1,5 +1,5 @@
-var Node = function (position) {
-  this.geometry = new THREE.SphereGeometry(1, 20, 20);
+var Node = function (size, position) {
+  this.geometry = new THREE.SphereGeometry(size, 20, 20);
   this.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
   this.mesh = new THREE.Mesh(this.geometry, this.material);
   this.mesh.position = position;
