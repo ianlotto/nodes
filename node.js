@@ -4,6 +4,8 @@ var Node = function (position) {
   this.mesh = new THREE.Mesh(this.geometry, this.material);
   this.mesh.position = position;
   this.destination = Node.calcRandomPosition();
+  
+  this.connections = [];
 }
 
 Node.calcRandomPosition = function () {
@@ -12,6 +14,36 @@ Node.calcRandomPosition = function () {
     y: Math.random() * 25, 
     z: Math.random() * 25
   }
+};
+
+Node.prototype.removeConnections = function () {
+  var connections = this.connections;
+  this.connections = [];
+  
+  return connections;
+}
+
+Node.prototype.addConnection = function (other_node) {
+  if(this.hasConnection(other_node)) return false;
+  
+  var connection = new Connection(this, other_node);
+  this.connections.push(connection);
+
+  return connection;
+};
+
+Node.prototype.hasConnection = function (other_node) {
+  var node = this;
+  var connected = false
+    
+  other_node.connections.forEach(function (connection) {
+    if(connection.end_node == node) {
+      connected = true;
+      return;
+    }
+  });
+  
+  return connected;
 }
 
 Node.prototype.position = function () {
@@ -29,6 +61,15 @@ Node.prototype.moveToDestination = function (increment) {
   this.mesh.position.y += (this.destination.y - curPos.y) / 20;
   this.mesh.position.z += (this.destination.z - curPos.z) / 20;
 };
+
+Node.prototype.moveConnections = function () {
+  var node = this;
+  this.connections.forEach(function (connection) {
+    //console.log(connection.startPoint())
+    connection.setStartPoint(node.mesh.position);
+    //console.log("after: " + connection.startPoint())
+  });
+}
 
 Node.prototype._distanceToDestination = function () {
   var curPos = this.mesh.position;

@@ -8,6 +8,7 @@
     </style>
     <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
     <script src="node.js"></script>
+    <script src="connection.js"></script>
   </head>
   <body>
     <script>
@@ -25,7 +26,7 @@
             
       var nodes = [];
       
-      for(var i = 0; i < 25; i++) {
+      for(var i = 0; i < 7; i++) {
         var position = Node.calcRandomPosition();
         nodes.push(new Node(position));
       }
@@ -36,22 +37,32 @@
       
       function moveNodes (nodes) {
         nodes.forEach(function (node) {
+          
           node.moveToDestination();
+          //node.moveConnections();
           if(node._distanceToDestination() < 2) {
             node.changeDestination();
           }
         });
       };
       
+      function removeConnections(nodes) {
+        nodes.forEach(function (node) {
+          var connections = node.removeConnections();
+          
+          connections.forEach(function (connection) {
+            scene.remove(connection.line);
+          })
+        });
+      }
+      
       function drawConnections (nodes) {
         nodes.forEach(function (node) {
-          nodes.forEach(function (other_node) {
-            if(node !== other_node) {
-              var nodePos = node.mesh.position;
-              var otherNodePos = other_node.mesh.position;
-              
-              //draw a line from node vertex to other node vertex
-              
+          nodes.forEach(function (otherNode) {
+            if(node !== otherNode) {
+              var connection = node.addConnection(otherNode);
+               //draw a line from node vertex to other node vertex
+              if(connection) scene.add(connection.line);
             }
           });
         });
@@ -63,6 +74,8 @@
       function render () {
         requestAnimationFrame(render);
         moveNodes(nodes);
+        removeConnections(nodes);
+        drawConnections(nodes);
         renderer.render(scene, camera);
       }
       
