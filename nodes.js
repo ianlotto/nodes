@@ -33,7 +33,7 @@ function moveNodes (nodes) {
     //node.moveConnections();
     
     //pick new destination just before node reaches intended destination
-    if(node._distanceToDestination() < 2) {
+    if(node._distanceTo(node.destination) < 2) {
       node.changeDestination(BOUNDS);
     }
   });
