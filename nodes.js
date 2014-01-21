@@ -1,11 +1,13 @@
 var scene = new THREE.Scene();
-var BOUNDS = window.innerWidth / 2;
+var BOUNDS = window.innerWidth;
 var NODE_COUNT = 10;
 
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .01, window.innerWidth * 2);
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1500);
 
+// camera.position.x = window.innderWidth / 2;
+// camera.position.y = window.innderWidth / 2;
 camera.position.z = window.innerWidth; 
-camera.lookAt(new THREE.Vector3(1,0,0));
+camera.lookAt(new THREE.Vector3(0,0,-1));
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -68,6 +70,24 @@ function render () {
   drawConnections(nodes);
   renderer.render(scene, camera);
   controls.update();
+}
+
+function _lengthToHex (length) {
+  var maxLength = window.innerWidth;
+  var factor = 255 / maxLength;
+  var hex = _toHex(Math.floor(length * factor));
+  
+  return parseInt("0x" + hex + hex + hex, 16);
+}
+
+function _toHex (n) {
+ n = parseInt(n,10);
+ if (isNaN(n)) return "00";
+ 
+ n = Math.max(0,Math.min(n,255));
+ 
+ return "0123456789ABCDEF".charAt((n-n%16)/16)
+      + "0123456789ABCDEF".charAt(n%16);
 }
 
 render();
