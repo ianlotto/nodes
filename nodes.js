@@ -1,6 +1,6 @@
 var scene = new THREE.Scene();
 var BOUNDS = window.innerWidth;
-var NODE_COUNT = 10;
+var NODE_COUNT = 15;
 
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1500);
 
@@ -21,7 +21,7 @@ var nodes = [];
 
 for(var i = 0; i < NODE_COUNT; i++) {
   var position = Node.calcRandomPosition(BOUNDS);
-  nodes.push(new Node(10, position, BOUNDS));
+  nodes.push(new Node(10, position, camera, BOUNDS));
 }
 
 nodes.forEach(function (node) {
